@@ -5,10 +5,12 @@ const db = require('../db');
 const USER_QUERY = require('../query/user.query');
 
 class AuthService {
-    generateAccessToken = (id, email) => {
+    generateAccessToken = (id, email, name, surname) => {
         const payload = {
             id,
             email,
+            name, 
+            surname
         }
 
         return jwt.sign(payload, secret, { expiresIn: "1d" });
@@ -44,10 +46,9 @@ class AuthService {
 
         if (!validPassword) throw new Error("Введен неверный пароль");
 
-        const token = this.generateAccessToken(user.id, email);
+        const token = this.generateAccessToken(user.id, email, user.name, user.surname);
 
         const { password: p, ...resUser } = user;
-        console.log(resUser)
         return { token, user: resUser };
     }
 }

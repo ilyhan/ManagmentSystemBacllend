@@ -4,7 +4,15 @@ const TASKS_QUERY = require('../query/tasks.query');
 class TasksService {
     taskDecorator(item) {
         const { name, surname, userid: id, boardname, ...task } = item;
-        return ({ ...task, boardName: boardname, assignee: { id: id, fullName: `${name} ${surname}` } });
+
+        return ({ 
+            ...task, 
+            boardName: boardname, 
+            assignee: { 
+                id: id, 
+                fullName: `${name} ${surname}` 
+            } 
+        });
     }
 
     async getAllTasks() {
@@ -25,8 +33,6 @@ class TasksService {
         // if (task.rows.length == 0) {
         //     throw new Error('Задача не найдена');
         // }
-
-        console.log(task.rows);
 
         return this.taskDecorator(task.rows[0]);
     }
@@ -49,8 +55,6 @@ class TasksService {
             TASKS_QUERY.update,
             [title, description, priority, status, assignee_id, id]
         );
-
-        console.log({ title, description, priority, status, assignee_id }, task.rows[0]);
 
         if (task.rowCount == 0) {
             throw new Error('Ошибка при обновлнии задачи');

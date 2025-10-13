@@ -14,7 +14,6 @@ class BoardService {
         }
 
         const board = await db.query(BOARD_QUERY.create, [name, description, id]);
-        console.log(board.rows[0]);
 
         if(board.rows.length == 0) {
             throw new Error("Ошибка создания доски");

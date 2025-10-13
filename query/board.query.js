@@ -19,7 +19,6 @@ const BOARD_QUERY = {
 
     getTasksByBoardId:
         `SELECT t.*, 
-         b.*,
          u.name,
          u.surname,
          u.id as userid,
