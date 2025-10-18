@@ -1,3 +1,13 @@
+
+-- Создание типа доп ифнормации
+CREATE TYPE info_type AS ENUM ('Mobile', 'Telegram', 'Email');
+
+-- Создание типа для грейда
+CREATE TYPE level_type AS ENUM ('Trainee', 'Junior', 'Strong Junior', 'Middle', 'Strong Middle', 'Senior', 'Lead');
+
+-- Создание скилла 
+CREATE TYPE skill_type AS ENUM ('Frontend', 'Backend', 'Product Manager', 'Analyst', 'QA');
+
 -- Создание таблицы пользователей
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -5,7 +15,16 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
     surname VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Создание таблицы должности 
+CREATE TABLE grades (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    level level_type,
+    skill skill_type,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Создание таблицы ролей
@@ -46,4 +65,13 @@ CREATE TABLE tasks (
     updated_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL,
     FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
+);
+
+--создание таблицы доп информации о пользователях
+CREATE TABLE extra_info (
+    id SERIAL PRIMARY KEY,
+    type info_type NOT NULL,
+    value VARCHAR(40) NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );

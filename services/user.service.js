@@ -11,10 +11,18 @@ class UserService {
         const result = [];
         if(users.rows) {
             users.rows.forEach(item => {
-                result.push({id: item.id, fullName: `${item.name} ${item.surname}`});
+                result.push({
+                    id: item.id, 
+                    fullName: `${item.name} ${item.surname}`
+                });
             });
         }
         return result;
+    }
+
+    async getAllEmployees() {
+        const employees = await db.query(USER_QUERY.getEmployees); 
+        return employees.rows;
     }
 }
 
