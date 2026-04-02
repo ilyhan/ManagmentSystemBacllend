@@ -1,8 +1,16 @@
 
 const BOARD_QUERY = {
+    // get:
+    //     `SELECT b.* 
+    //      FROM board b
+    //      JOIN board_users bu ON bu.board_id = b.id
+    //      WHERE bu.user_id = $1
+    //     `,
+
     get:
         `SELECT * 
-         FROM board
+         FROM board 
+         WHERE created_by = $1
         `,
 
     getByName:
@@ -31,10 +39,19 @@ const BOARD_QUERY = {
 
     create:
         `INSERT INTO board
-         (name, description, created_by)
-         VALUES ($1, $2, $3)
+         (name, name_id, description, created_by)
+         VALUES ($1, $2, $3, $4)
          RETURNING *
         `,
+
+    getUsers:
+        `SELECT u.id, 
+         u.name,
+         u.surname
+         FROM board_users bu 
+         JOIN users u ON u.id = bu.user_id
+         WHERE bu.board_id = $1
+        `
 }
 
 module.exports = BOARD_QUERY;
