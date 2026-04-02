@@ -25,12 +25,12 @@ const TASKS_QUERY = {
 
     create:
         `INSERT INTO tasks
-         (title, description, board_id, priority, status, assignee_id)
-         values($1, $2, $3, $4, $5, $6)
+         (title, description, board_id, priority, status, assignee_id, current_id)
+         values($1, $2, $3, $4, $5, $6, $7)
          RETURNING *
         `,
 
-    update: 
+    update:
         `UPDATE tasks 
          SET 
            title = $1,
@@ -42,6 +42,12 @@ const TASKS_QUERY = {
          WHERE id = $6
          RETURNING *
         `,
+
+    getLastId:
+        `SELECT MAX(current_id)
+         FROM tasks t
+         WHERE t.board_id = $1
+        `
 }
 
 module.exports = TASKS_QUERY;

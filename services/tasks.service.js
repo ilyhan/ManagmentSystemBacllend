@@ -1,17 +1,18 @@
 const db = require('../db');
+const BOARD_QUERY = require('../query/board.query');
 const TASKS_QUERY = require('../query/tasks.query');
 
 class TasksService {
     taskDecorator(item) {
         const { name, surname, userid: id, boardname, ...task } = item;
 
-        return ({ 
-            ...task, 
-            boardName: boardname, 
-            assignee: { 
-                id: id, 
-                fullName: `${name} ${surname}` 
-            } 
+        return ({
+            ...task,
+            boardName: boardname,
+            assignee: {
+                id: id,
+                fullName: `${name} ${surname}`
+            }
         });
     }
 
@@ -38,16 +39,24 @@ class TasksService {
     }
 
     async createTask({ title, description, board_id, priority, status, assignee_id }) {
+        const lastTaskIdQuery = await db.query(TASKS_QUERY.getLastId, [board_id]);
+        const lastTaskId = (lastTaskIdQuery.rows[0]?.max || 0) + 1;
+
         const task = await db.query(
             TASKS_QUERY.create,
-            [title, description, board_id, priority, status, assignee_id]
+            [title, description, board_id, priority, status, assignee_id, lastTaskId]
         );
 
         if (task.rowCount == 0) {
             throw new Error('Ошибка при создании');
         }
 
-        return task.rows[0];
+        const board = await db.query(BOARD_QUERY.getById, [id]);
+        const boardNaming = board.rows[0]?.name_id ?? '';
+
+        const current_name = boardNaming && lastTaskId ? `${boardNaming}-${lastTaskId}` : '';
+
+        return { ...task.rows[0], current_name };
     }
 
     async updateTask({ title, description, priority, status, assignee_id }, id) {
