@@ -43,7 +43,7 @@ class AuthService {
         if (result.rows.length == 0) throw new Error("Пользователь с таким Никнеймом не найден");
 
         const user = result.rows[0];
-        console.log(bcrypt.hashSync(password, 7))
+
         const validPassword = bcrypt.compareSync(password, user.password);
 
         if (!validPassword) throw new Error("Введен неверный пароль");

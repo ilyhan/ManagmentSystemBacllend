@@ -95,7 +95,7 @@ CREATE TABLE board_users (
 CREATE TABLE tracking (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    board_id INT NOT NULL,
+    board_id INT,
     date DATE,
     description TEXT,
     reservedHours NUMERIC(4, 2) NOT NULL CHECK (

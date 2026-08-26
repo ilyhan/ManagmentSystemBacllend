@@ -8,9 +8,10 @@ const BOARD_QUERY = {
     //     `,
 
     get:
-        `SELECT * 
-         FROM board 
-         WHERE created_by = $1
+        `SELECT DISTINCT b.*
+         FROM board b
+         LEFT JOIN board_users bu ON bu.board_id = b.id
+         WHERE b.created_by = $1 OR bu.user_id = $1
         `,
 
     getByName:
