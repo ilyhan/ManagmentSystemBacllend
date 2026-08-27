@@ -106,3 +106,25 @@ CREATE TABLE tracking (
     FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+--создание таблицы пространства
+CREATE TABLE space (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+--создание таблицы раздела (с вложенностью и привязкой к пространству)
+CREATE TABLE chapter (
+    id SERIAL PRIMARY KEY,
+    space_id INT NOT NULL,
+    parent_id INT,
+    name VARCHAR(100) NOT NULL,
+    content TEXT,
+    position INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (space_id) REFERENCES space(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES chapter(id) ON DELETE CASCADE,
+    CHECK (parent_id IS NULL OR parent_id <> id)
+);
